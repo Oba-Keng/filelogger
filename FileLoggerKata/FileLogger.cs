@@ -29,6 +29,7 @@ namespace FileLoggerKata
         {
             var logDate = DateProvider.Today;
 
+            var messageToAppend = $"{logDate:YYYY:MM:DD HH:MM:SS}" + message;
 
             var logFileName = GetLogFileName();
 
@@ -46,7 +47,7 @@ namespace FileLoggerKata
 
 
 
-            FileSystem.Append(logFileName, message);
+            FileSystem.Append(logFileName, messageToAppend);
 
             bool ShouldRotateWeekendLogs()
             {
