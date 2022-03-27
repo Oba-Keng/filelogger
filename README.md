@@ -2,7 +2,9 @@
 
 References
 
-##https://medium.com/@HansikaWanniarachchi/get-started-net-core-application-unit-testing-with-xunit-and-moq-83c7ee0d15f3 ##https://daedtech.com/introduction-to-unit-testing-part-6-test-doubles/
+## https://medium.com/@HansikaWanniarachchi/get-started-net-core-application-unit-testing-with-xunit-and-moq-83c7ee0d15f3
+
+## https://daedtech.com/introduction-to-unit-testing-part-6-test-doubles/
 
 # File logger
 
