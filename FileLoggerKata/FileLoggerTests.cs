@@ -12,7 +12,7 @@ namespace FileLoggerKata
 
         private FileLogger filelogger { get; } //To Access filelogger class being tested
 
-        private string message = "well.txt"; //Test string
+        private string message = "well.txt"; //Test message
 
         public string messageAppendToFile => $"{DateTime.Now:yyyy-MM-dd HH:mm:ss}" + message;
 
@@ -27,7 +27,6 @@ namespace FileLoggerKata
 
 
 
-
         [Fact]
         public void validateLog()
         {
@@ -36,7 +35,6 @@ namespace FileLoggerKata
             // filelogger.Log(messageAppendToFile);
             Console.WriteLine(mockIDateProvider);
             Assert.Contains("well", "this is it");
-            // Assert.IsTrue(filelogger);
         }
     }
 
