@@ -15,22 +15,22 @@ namespace FileLoggerKata
         private string message = "well"; //Test message
 
 
-        private string weekendLogFile = $"weekend.{LogExtension}";//weekend with extension
+        private string weekendLogFile = $"weekend.{logExtension}";//weekend with extension
 
         private readonly DateTime Saturday = new DateTime(2022, 03, 26);//Creating date and time for Saturday
         private readonly DateTime Sunday = new DateTime(2022, 03, 27);//Creating date and time for Sunday
 
-        private DateTime Today => new DateTime(2022, 03, 27);//Creating date and time for during the week
+        private DateTime Today => new DateTime(2022, 03, 25);//Creating date and time for during the week
 
 
-        public string appendMessageWeek => $"{Today:YYYY-MM-dd HH:MM:SS}" + message;
+        public string appendMessageWeek => $"{Today:yyyy-MM-dd HH:mm:ss} " + message;
 
-        public string appendMessageSaturday => $"{Saturday:YYYY-MM-dd HH:MM:SS}" + message;
+        public string appendMessageSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss} " + message;
 
-        public string appendMessageSunday => $"{Sunday:YYYY-MM-dd HH:MM:SS}" + message;
+        public string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss} " + message;
 
-        private const string LogExtension = "txt";
-        public string logFileName_test => $"{Today:YYYY-MM-dd HH:MM:SS}.{LogExtension}" + message;
+        private const string logExtension = "txt";
+        public string logFileName_test => $"log{Today:yyyy-MM-dd HH:mm:ss}.{logExtension}" + message;
 
 
 
@@ -42,11 +42,11 @@ namespace FileLoggerKata
 
         public FileLoggerKataTests()//Mocks for IDateprovider and IFileSystem actions
         {
-            DateProvider = new Mock<IDateProvider>();
+            DateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
 
             DateProvider.Setup(day => day.Today).Returns(Today);
 
-            FileSystem = new Mock<IFileSystem>();
+            FileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
             //setup for FileSystem methods
             FileSystem.Setup(file => file.Exists(It.IsNotNull<string>())).Returns(true);
@@ -81,11 +81,11 @@ namespace FileLoggerKata
 
             filelogger.Log(message);
 
-            FileSystem.Verify(file => file.Exists(logFileName_test));
+            FileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Create(logFileName_test));
+            FileSystem.Verify(file => file.Create(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek));
+            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once);
 
         }
         [Fact]
@@ -95,13 +95,21 @@ namespace FileLoggerKata
 
             filelogger.Log(message);
 
-            FileSystem.Verify(file => file.Exists(logFileName_test));
+            FileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
             FileSystem.Verify(file => file.Create(logFileName_test));
 
-            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), "not appended");
+            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
 
         }
+
+        [Fact]
+        public void weekendLogCheck()
+        {
+
+        }
+
+
 
 
     }
