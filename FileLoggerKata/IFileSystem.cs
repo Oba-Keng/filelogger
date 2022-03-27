@@ -10,4 +10,7 @@ namespace FileLoggerKata
         DateTime GetLastWriteTime(string path);
         void Rename(string currentPath, string newPath);
     }
+
+
+
 }
