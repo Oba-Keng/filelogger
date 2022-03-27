@@ -1,6 +1,6 @@
-#Project tested using Xunit and Moq
+- Project tested using Xunit and Moq
 
-References
+# References
 
 ## https://medium.com/@HansikaWanniarachchi/get-started-net-core-application-unit-testing-with-xunit-and-moq-83c7ee0d15f3
 
