@@ -69,7 +69,7 @@ namespace FileLoggerKata
         {
             filelogger.Log(messagetoTest);
 
-            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once);
+            mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once);
 
 
         }
@@ -86,7 +86,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(logFileName_test), Times.Once);
 
-            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once);
+            mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once);
 
         }
         [Fact]
@@ -100,7 +100,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(logFileName_test), Times.Never);
 
-            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once, "not appended");
 
         }
 
@@ -117,7 +117,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
         }
 
         [Fact]
@@ -135,7 +135,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSaturday), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
         }
 
         [Fact]
@@ -156,7 +156,19 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
+        }
+
+        [Fact]
+
+        public void logsToWeekend()
+        {
+            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+
+            filelogger.Log(messagetoTest);
+
+            mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce);
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once);
         }
 
 
