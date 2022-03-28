@@ -12,7 +12,7 @@ namespace FileLoggerKata
 
         private FileLogger filelogger { get; } //To Access filelogger class being tested
 
-        private string message = "well"; //Test message
+        private const string message = "success"; //Test message
 
         private const string logExtension = "txt";
 
@@ -30,7 +30,7 @@ namespace FileLoggerKata
 
         public string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss} " + message;
 
-        public string logFileName_test => $"log{Now:yyyy-MM-dd}.{logExtension}";
+        public string logFileName_test => $"log{Now:yyyyMMdd}.{logExtension}";
 
 
 
@@ -89,7 +89,7 @@ namespace FileLoggerKata
 
         }
         [Fact]
-        public void LogFileNotFound()
+        public void logFileNotFound()
         {
             FileSystem.Setup(file => file.Exists(logFileName_test)).Returns(true);
 
@@ -104,7 +104,7 @@ namespace FileLoggerKata
         }
 
         [Fact]
-        public void weekendLogCheck()
+        public void sundayLogCheck()
         {
             FileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
@@ -117,6 +117,22 @@ namespace FileLoggerKata
             FileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
 
             FileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
+        }
+
+        [Fact]
+        public void saturdayLogCheck()
+        {
+            FileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
+
+            DateProvider.Setup(day => day.Now).Returns(Saturday);
+
+            filelogger.Log(message);
+
+            FileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
+
+            FileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
+
+            FileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSaturday), Times.Once, "not appended");
         }
 
 
