@@ -7,7 +7,7 @@ namespace FileLoggerKata
     {
         public static IDateProvider Instance => new DefaultDataProvider();
 
-        public DateTime Now => DateTime.Now;
+        public DateTime Today => DateTime.Today;
 
     }
 }

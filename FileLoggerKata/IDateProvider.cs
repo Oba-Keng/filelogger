@@ -4,7 +4,7 @@ namespace FileLoggerKata
 {
     public interface IDateProvider
     {
-        DateTime Now { get; }
+        DateTime Today { get; }
 
 
     }
