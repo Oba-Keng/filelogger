@@ -49,9 +49,9 @@ namespace FileLoggerKata
             mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
             //setup for FileSystem methods
-            mockFileSystem.Setup(file => file.Exists(It.IsNotNull<string>())).Returns(true);
-            mockFileSystem.Setup(file => file.Create(It.IsNotNull<string>()));
             mockFileSystem.Setup(file => file.Append(It.IsNotNull<string>(), It.IsNotNull<string>()));
+            mockFileSystem.Setup(file => file.Create(It.IsNotNull<string>()));
+            mockFileSystem.Setup(file => file.Exists(It.IsNotNull<string>())).Returns(true);
             mockFileSystem.Setup(file => file.GetLastWriteTime(It.IsNotNull<string>())).Returns(DateTime.Now);
             mockFileSystem.Setup(file => file.Rename(It.IsNotNull<string>(), It.IsNotNull<string>()));
 
@@ -70,6 +70,7 @@ namespace FileLoggerKata
             filelogger.Log(messagetoTest);
 
             mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once);
+
 
         }
 
