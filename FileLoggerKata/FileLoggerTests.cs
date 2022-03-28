@@ -18,17 +18,17 @@ namespace FileLoggerKata
 
         private string weekendLogFile => $"weekend.{logExtension}";//weekend file with extension
 
-        private readonly DateTime Saturday = new DateTime(2022, 04, 2);//Creating date and time for Saturday
-        private readonly DateTime Sunday = new DateTime(2022, 04, 3);//Creating date and time for Sunday
+        private readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
+        private readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
 
-        private DateTime now => new DateTime(2022, 03, 28);//Creating date and time for during the week
+        private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
 
 
-        private string appendMessageWeek => $"{now:yyyy-MM-dd HH:mm:ss} " + messagetoTest;
+        private string appendMessageWeek => $"{now:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
 
-        private string appendMessageSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss} " + messagetoTest;
+        private string appendMessageSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
 
-        private string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss} " + messagetoTest;
+        private string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
 
         private string logFileName_test => $"log{now:yyyyMMdd}.{logExtension}";
 
@@ -69,7 +69,7 @@ namespace FileLoggerKata
         {
             filelogger.Log(messagetoTest);
 
-            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once);
 
         }
 
