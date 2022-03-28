@@ -6,6 +6,8 @@
 
 ## https://daedtech.com/introduction-to-unit-testing-part-6-test-doubles/
 
+## https://makolyte.com/event-driven-dotnet-how-to-unit-test-code-that-depends-on-an-event/
+
 # File logger
 
 ## What does the application do?

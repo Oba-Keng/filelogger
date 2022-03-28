@@ -34,29 +34,29 @@ namespace FileLoggerKata
 
 
 
-        private Mock<IDateProvider> DateProvider { get; }//Gives access to IDateProvider interface and properties
+        private Mock<IDateProvider> mockDateProvider { get; }//Gives access to IDateProvider interface and properties
 
-        private Mock<IFileSystem> FileSystem { get; }//Gives access to IFileSystem interface and properties
+        private Mock<IFileSystem> mockFileSystem { get; }//Gives access to IFileSystem interface and properties
 
 
 
         public FileLoggerKataTests()//Mocks for IDateprovider and IFileSystem actions
         {
-            DateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
+            mockDateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
 
-            DateProvider.Setup(day => day.Today).Returns(now);
+            mockDateProvider.Setup(day => day.Today).Returns(now);
 
-            FileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
+            mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
             //setup for FileSystem methods
-            FileSystem.Setup(file => file.Exists(It.IsNotNull<string>())).Returns(true);
-            FileSystem.Setup(file => file.Create(It.IsNotNull<string>()));
-            FileSystem.Setup(file => file.Append(It.IsNotNull<string>(), It.IsNotNull<string>()));
-            FileSystem.Setup(file => file.GetLastWriteTime(It.IsNotNull<string>())).Returns(DateTime.Now);
-            FileSystem.Setup(file => file.Rename(It.IsNotNull<string>(), It.IsNotNull<string>()));
+            mockFileSystem.Setup(file => file.Exists(It.IsNotNull<string>())).Returns(true);
+            mockFileSystem.Setup(file => file.Create(It.IsNotNull<string>()));
+            mockFileSystem.Setup(file => file.Append(It.IsNotNull<string>(), It.IsNotNull<string>()));
+            mockFileSystem.Setup(file => file.GetLastWriteTime(It.IsNotNull<string>())).Returns(DateTime.Now);
+            mockFileSystem.Setup(file => file.Rename(It.IsNotNull<string>(), It.IsNotNull<string>()));
 
             //mock objects for filelogger
-            filelogger = new FileLogger(FileSystem.Object, DateProvider.Object);
+            filelogger = new FileLogger(mockFileSystem.Object, mockDateProvider.Object);
 
 
 
@@ -69,7 +69,7 @@ namespace FileLoggerKata
         {
             filelogger.Log(messagetoTest);
 
-            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "Error");
+            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "Error");
 
         }
 
@@ -77,62 +77,62 @@ namespace FileLoggerKata
         [Fact]
         public void validateLogFile()//Check for file
         {
-            FileSystem.Setup(file => file.Exists(logFileName_test)).Returns(false);
+            mockFileSystem.Setup(file => file.Exists(logFileName_test)).Returns(false);
 
             filelogger.Log(messagetoTest);
 
-            FileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
+            mockFileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Create(logFileName_test), Times.Once);
+            mockFileSystem.Verify(file => file.Create(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "no appended");
+            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "no appended");
 
         }
         [Fact]
         public void logFileNotFound()
         {
-            FileSystem.Setup(file => file.Exists(logFileName_test)).Returns(true);
+            mockFileSystem.Setup(file => file.Exists(logFileName_test)).Returns(true);
 
             filelogger.Log(messagetoTest);
 
-            FileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
+            mockFileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Create(logFileName_test), Times.Never);
+            mockFileSystem.Verify(file => file.Create(logFileName_test), Times.Never);
 
-            FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
 
         }
 
         [Fact]
         public void sundayLogCheck()
         {
-            FileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
+            mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
-            DateProvider.Setup(day => day.Today).Returns(Sunday);
+            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
 
             filelogger.Log(messagetoTest);
 
-            FileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
+            mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
 
-            FileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
+            mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
 
-            FileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
         }
 
         [Fact]
         public void saturdayLogCheck()
         {
-            FileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
+            mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
 
-            DateProvider.Setup(day => day.Today).Returns(Saturday);
+            mockDateProvider.Setup(day => day.Today).Returns(Saturday);
 
             filelogger.Log(messagetoTest);
 
-            FileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
+            mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
 
-            FileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
+            mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
 
-            FileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSaturday), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSaturday), Times.Once, "not appended");
         }
 
 

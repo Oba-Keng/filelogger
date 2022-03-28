@@ -27,8 +27,6 @@ namespace FileLoggerKata
 
         public void Log(string message)
         {
-            // var logDate = DateProvider.Today;
-            // var messageToAppend = $"{logDate:yyyy-MM-dd}" + message;
 
             var logFileName = GetLogFileName();
 
