@@ -2,6 +2,8 @@
 
 # References
 
+## https://pnguyen.io/posts/verify-ilogger-call-in-dotnet-core/
+
 ## https://medium.com/@HansikaWanniarachchi/get-started-net-core-application-unit-testing-with-xunit-and-moq-83c7ee0d15f3
 
 ## https://daedtech.com/introduction-to-unit-testing-part-6-test-doubles/
