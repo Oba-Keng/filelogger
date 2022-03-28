@@ -14,23 +14,23 @@ namespace FileLoggerKata
 
         private string message = "well"; //Test message
 
+        private const string logExtension = "txt";
 
-        private string weekendLogFile = $"weekend.{logExtension}";//weekend with extension
+        private string weekendLogFile => $"weekend.{logExtension}";//weekend with extension
 
         private readonly DateTime Saturday = new DateTime(2022, 03, 26);//Creating date and time for Saturday
         private readonly DateTime Sunday = new DateTime(2022, 03, 27);//Creating date and time for Sunday
 
-        private DateTime Today => new DateTime(2022, 03, 25);//Creating date and time for during the week
+        private DateTime Now => new DateTime(2022, 03, 28);//Creating date and time for during the week
 
 
-        public string appendMessageWeek => $"{Today:yyyy-MM-dd HH:mm:ss} " + message;
+        public string appendMessageWeek => $"{Now:yyyy-MM-dd HH:mm:ss} " + message;
 
         public string appendMessageSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss} " + message;
 
         public string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss} " + message;
 
-        private const string logExtension = "txt";
-        public string logFileName_test => $"log{Today:yyyy-MM-dd HH:mm:ss}.{logExtension}" + message;
+        public string logFileName_test => $"log{Now:yyyy-MM-dd}.{logExtension}";
 
 
 
@@ -44,7 +44,7 @@ namespace FileLoggerKata
         {
             DateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
 
-            DateProvider.Setup(day => day.Today).Returns(Today);
+            DateProvider.Setup(day => day.Now).Returns(Now);
 
             FileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
@@ -97,7 +97,7 @@ namespace FileLoggerKata
 
             FileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
-            FileSystem.Verify(file => file.Create(logFileName_test));
+            FileSystem.Verify(file => file.Create(logFileName_test), Times.Never);
 
             FileSystem.Verify(file => file.Append(logFileName_test, appendMessageWeek), Times.Once, "not appended");
 
@@ -106,7 +106,17 @@ namespace FileLoggerKata
         [Fact]
         public void weekendLogCheck()
         {
+            FileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
+            DateProvider.Setup(day => day.Now).Returns(Sunday);
+
+            filelogger.Log(message);
+
+            FileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
+
+            FileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
+
+            FileSystem.Verify(file => file.Append(weekendLogFile, appendMessageSunday), Times.Once, "not appended");
         }
 
 

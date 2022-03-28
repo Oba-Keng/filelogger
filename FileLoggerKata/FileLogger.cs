@@ -27,9 +27,9 @@ namespace FileLoggerKata
 
         public void Log(string message)
         {
-            var logDate = DateProvider.Today;
+            var logDate = DateProvider.Now;
 
-            var messageToAppend = $"{logDate:YYYY:MM:DD HH:MM:SS}" + message;
+            var messageToAppend = $"{logDate:yyyy-MM-dd HH:mm:ss}" + message;
 
             var logFileName = GetLogFileName();
 
@@ -51,15 +51,15 @@ namespace FileLoggerKata
 
             bool ShouldRotateWeekendLogs()
             {
-                return IsWeekend(DateProvider.Today) &&
+                return IsWeekend(DateProvider.Now) &&
                        FileSystem.Exists(logFileName) &&
-                       (DateProvider.Today - FileSystem.GetLastWriteTime(logFileName)).Days > 2;
+                       (DateProvider.Now - FileSystem.GetLastWriteTime(logFileName)).Days > 2;
             }
         }
 
         public string GetLogFileName()
         {
-            var today = DateProvider.Today;
+            var today = DateProvider.Now;
 
 
 
@@ -83,7 +83,7 @@ namespace FileLoggerKata
 
         private static string ToFileDateFormat(DateTime date)
         {
-            return date.ToString("yyyyMMdd");
+            return date.ToString("yyyy-MM-dd");
 
         }
 
