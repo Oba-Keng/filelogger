@@ -19,21 +19,22 @@ namespace FileLoggerKata
 
         private string weekendLogFile => $"weekend.{logExtension}";//weekend file with extension
 
-        private readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
+        private static readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
         private readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
+
+        private string messageToAppendSaturday = $"{Saturday: yyyy-MM-dd HH:mm:ss}" + messageToAppend;
 
         private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
 
         private string logFileName_test => $"log{now:yyyyMMdd}.{logExtension}";
 
-
-
         private Mock<IDateProvider> mockDateProvider { get; }//Gives access to IDateProvider interface and properties
 
         private Mock<IFileSystem> mockFileSystem { get; }//Gives access to IFileSystem interface and properties
 
+        private DateTime passedDate => new DateTime(2022, 03, 26);
 
-
+        private string weekendMessage = "weekend";
         public FileLoggerKataTests()//Mocks for IDateprovider and IFileSystem actions
         {
             mockDateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
@@ -52,9 +53,6 @@ namespace FileLoggerKata
             //mock objects for filelogger
             filelogger = new FileLogger(mockFileSystem.Object, mockDateProvider.Object);
 
-
-
-
         }
 
         [Fact]
@@ -67,7 +65,6 @@ namespace FileLoggerKata
 
 
         }
-
 
         [Fact]
         public void validateLogFile()//Check for file
@@ -83,6 +80,7 @@ namespace FileLoggerKata
             mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once);
 
         }
+
         [Fact]
         public void logFileNotFound()
         {
@@ -133,9 +131,7 @@ namespace FileLoggerKata
         }
 
         [Fact]
-
-        //checks for weekend file
-        public void sundayLogAppends()
+        public void sundayLogAppends()//checks for weekend file
         {
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
 
@@ -154,7 +150,6 @@ namespace FileLoggerKata
         }
 
         [Fact]
-
         public void logsToWeekend()
         {
             mockDateProvider.Setup(day => day.Today).Returns(Sunday);
@@ -165,8 +160,28 @@ namespace FileLoggerKata
             mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once);
         }
 
+        [Fact]
+
+        public void weekendLogFileSaturday()
+        {
+            var passedDateLogFile = $"{weekendMessage}-{passedDate:yyyyMMdd}.{logExtension}";
+
+            mockDateProvider.Setup(day => day.Today).Returns(Saturday);
+
+            mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
+
+            mockFileSystem.Setup(file => file.GetLastWriteTime(weekendLogFile)).Returns(passedDate);
 
 
+            mockFileSystem.Verify(file => file.Rename(weekendLogFile, passedDateLogFile), Times.Once);
+
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSaturday), Times.Once);
+
+            filelogger.Log(messagetoTest);
+
+
+
+        }
 
     }
 
