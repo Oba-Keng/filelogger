@@ -12,7 +12,8 @@ namespace FileLoggerKata
 
         private FileLogger filelogger { get; } //To Access filelogger class being tested
 
-        private const string messagetoTest = "success"; //Test message
+        private const string messageToAppend = "success";
+        private string messagetoTest => $"{now:yyyy-MM-dd HH:mm:ss}" + messageToAppend; //Test message
 
         private const string logExtension = "txt";
 
@@ -22,13 +23,6 @@ namespace FileLoggerKata
         private readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
 
         private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
-
-
-        private string appendMessageWeek => $"{now:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
-
-        private string appendMessageSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
-
-        private string appendMessageSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
 
         private string logFileName_test => $"log{now:yyyyMMdd}.{logExtension}";
 
