@@ -22,7 +22,7 @@ namespace FileLoggerKata
         private static readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
         private readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
 
-        private string messageToAppendSaturday = $"{Saturday: yyyy-MM-dd HH:mm:ss}" + messageToAppend;
+        private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
 
         private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
 
@@ -172,12 +172,12 @@ namespace FileLoggerKata
 
             mockFileSystem.Setup(file => file.GetLastWriteTime(weekendLogFile)).Returns(passedDate);
 
+            filelogger.Log(messageToAppendSaturday);
 
             mockFileSystem.Verify(file => file.Rename(weekendLogFile, passedDateLogFile), Times.Once);
 
             mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSaturday), Times.Once);
 
-            filelogger.Log(messagetoTest);
 
 
 
