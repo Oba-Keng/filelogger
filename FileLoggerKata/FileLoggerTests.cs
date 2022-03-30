@@ -20,9 +20,12 @@ namespace FileLoggerKata
         private string weekendLogFile => $"weekend.{logExtension}";//weekend file with extension
 
         private static readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
-        private readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
+        private static readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
 
-        private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messagetoTest;
+        private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
+
+        private string messageToAppendSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
+
 
         private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
 
@@ -103,13 +106,13 @@ namespace FileLoggerKata
 
             mockDateProvider.Setup(day => day.Today).Returns(Sunday);
 
-            filelogger.Log(messagetoTest);
+            filelogger.Log(messageToAppendSunday);
 
             mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Never);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSunday), Times.Once, "not appended");
         }
 
         [Fact]
@@ -119,7 +122,7 @@ namespace FileLoggerKata
 
             mockDateProvider.Setup(day => day.Today).Returns(Saturday);
 
-            filelogger.Log(messagetoTest);
+            filelogger.Log(messageToAppendSaturday);
 
             mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce, "not fetched");
 
@@ -127,7 +130,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSaturday), Times.Once, "not appended");
         }
 
         [Fact]
@@ -137,7 +140,7 @@ namespace FileLoggerKata
 
             mockDateProvider.Setup(day => day.Today).Returns(Sunday);
 
-            filelogger.Log(messagetoTest);
+            filelogger.Log(messageToAppendSunday);
 
             mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce, "not fetched");
 
@@ -146,7 +149,7 @@ namespace FileLoggerKata
 
             mockFileSystem.Verify(file => file.Create(weekendLogFile), Times.Once);
 
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once, "not appended");
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSunday), Times.Once, "not appended");
         }
 
         [Fact]
@@ -154,10 +157,10 @@ namespace FileLoggerKata
         {
             mockDateProvider.Setup(day => day.Today).Returns(Sunday);
 
-            filelogger.Log(messagetoTest);
+            filelogger.Log(messageToAppendSunday);
 
             mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce);
-            mockFileSystem.Verify(file => file.Append(weekendLogFile, messagetoTest), Times.Once);
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSunday), Times.Once);
         }
 
         [Fact]
