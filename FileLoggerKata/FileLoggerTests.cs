@@ -186,6 +186,29 @@ namespace FileLoggerKata
 
         }
 
+        [Fact]
+
+        public void weekendLogFileSunday()
+        {
+            var passedDateLogFile = $"{weekendMessage}-{passedDate:yyyyMMdd}.{logExtension}";
+
+            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+
+            mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
+
+            mockFileSystem.Setup(file => file.GetLastWriteTime(weekendLogFile)).Returns(passedDate);
+
+            filelogger.Log(messageToAppendSunday);
+
+            mockFileSystem.Verify(file => file.Rename(weekendLogFile, passedDateLogFile), Times.Once);
+
+            mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSunday), Times.Once);
+
+
+
+
+        }
+
     }
 
 }
