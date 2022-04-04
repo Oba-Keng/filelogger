@@ -48,15 +48,15 @@ namespace FileLoggerKata
 
             bool ShouldRotateWeekendLogs()
             {
-                return IsWeekend(DateProvider.Today) &&
+                return IsWeekend(DateProvider.Now) &&
                        FileSystem.Exists(logFileName) &&
-                       (DateProvider.Today - FileSystem.GetLastWriteTime(logFileName)).Days > 2;
+                       (DateProvider.Now - FileSystem.GetLastWriteTime(logFileName)).Days > 2;
             }
         }
 
         public string GetLogFileName()
         {
-            var today = DateProvider.Today;
+            var today = DateProvider.Now;
 
 
 

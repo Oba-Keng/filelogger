@@ -10,24 +10,26 @@ namespace FileLoggerKata
     public class FileLoggerKataTests //Class for all FileLogger tests
     {
 
-        private FileLogger filelogger { get; } //To Access filelogger class being tested
+        private FileLogger filelogger { get; } //To Access filelogger class and its methods
 
-        private const string messageToAppend = "success";
-        private string messagetoTest => $"{now:yyyy-MM-dd HH:mm:ss}" + messageToAppend; //Test message
+        private const string messageToAppend = " this is the message appended to end of file";
+
+        private DateTime now => DateTime.Now;//Current date and time 
+
+        private string messagetoTest => $"{now:yyyy-MM-dd HH:mm:ss}" + messageToAppend; //Test message with date 
 
         private const string logExtension = "txt";
 
         private string weekendLogFile => $"weekend.{logExtension}";//weekend file with extension
 
-        private static readonly DateTime Saturday = new DateTime(2022, 4, 2);//Creating date and time for Saturday
-        private static readonly DateTime Sunday = new DateTime(2022, 4, 3);//Creating date and time for Sunday
+        private static readonly DateTime Saturday = new DateTime(2022, 4, 2, 22, 06, 36);//Creating date and time for Saturday
+        private static readonly DateTime Sunday = new DateTime(2022, 4, 3, 16, 15, 40);//Creating date and time for Sunday
 
         private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
 
         private string messageToAppendSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
 
 
-        private DateTime now => new DateTime(2022, 3, 28);//Creating date and time for during the week
 
         private string logFileName_test => $"log{now:yyyyMMdd}.{logExtension}";
 
@@ -42,7 +44,7 @@ namespace FileLoggerKata
         {
             mockDateProvider = new Mock<IDateProvider>(MockBehavior.Strict);
 
-            mockDateProvider.Setup(day => day.Today).Returns(now);
+            mockDateProvider.Setup(day => day.Now).Returns(now);
 
             mockFileSystem = new Mock<IFileSystem>(MockBehavior.Strict);
 
@@ -64,6 +66,7 @@ namespace FileLoggerKata
         {
             filelogger.Log(messagetoTest);
 
+
             mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once);
 
 
@@ -75,6 +78,9 @@ namespace FileLoggerKata
             mockFileSystem.Setup(file => file.Exists(logFileName_test)).Returns(false);
 
             filelogger.Log(messagetoTest);
+
+
+
 
             mockFileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
@@ -91,6 +97,9 @@ namespace FileLoggerKata
 
             filelogger.Log(messagetoTest);
 
+
+
+
             mockFileSystem.Verify(file => file.Exists(logFileName_test), Times.Once);
 
             mockFileSystem.Verify(file => file.Create(logFileName_test), Times.Never);
@@ -104,9 +113,11 @@ namespace FileLoggerKata
         {
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
-            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+            mockDateProvider.Setup(day => day.Now).Returns(Sunday);
 
             filelogger.Log(messageToAppendSunday);
+
+
 
             mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
 
@@ -120,11 +131,12 @@ namespace FileLoggerKata
         {
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
 
-            mockDateProvider.Setup(day => day.Today).Returns(Saturday);
+            mockDateProvider.Setup(day => day.Now).Returns(Saturday);
 
             filelogger.Log(messageToAppendSaturday);
 
-            mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce, "not fetched");
+
+            mockDateProvider.VerifyGet(day => day.Now, Times.AtLeastOnce, "not fetched");
 
             mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
 
@@ -138,11 +150,12 @@ namespace FileLoggerKata
         {
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(false);
 
-            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+            mockDateProvider.Setup(day => day.Now).Returns(Sunday);
 
             filelogger.Log(messageToAppendSunday);
 
-            mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce, "not fetched");
+
+            mockDateProvider.VerifyGet(day => day.Now, Times.AtLeastOnce, "not fetched");
 
 
             mockFileSystem.Verify(file => file.Exists(weekendLogFile), Times.AtLeastOnce);
@@ -155,11 +168,12 @@ namespace FileLoggerKata
         [Fact]
         public void logsToWeekend()
         {
-            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+            mockDateProvider.Setup(day => day.Now).Returns(Sunday);
 
             filelogger.Log(messageToAppendSunday);
 
-            mockDateProvider.VerifyGet(day => day.Today, Times.AtLeastOnce);
+
+            mockDateProvider.VerifyGet(day => day.Now, Times.AtLeastOnce);
             mockFileSystem.Verify(file => file.Append(weekendLogFile, messageToAppendSunday), Times.Once);
         }
 
@@ -169,13 +183,16 @@ namespace FileLoggerKata
         {
             var passedDateLogFile = $"{weekendMessage}-{passedDate:yyyyMMdd}.{logExtension}";
 
-            mockDateProvider.Setup(day => day.Today).Returns(Saturday);
+            mockDateProvider.Setup(day => day.Now).Returns(Saturday);
 
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
             mockFileSystem.Setup(file => file.GetLastWriteTime(weekendLogFile)).Returns(passedDate);
 
             filelogger.Log(messageToAppendSaturday);
+
+
+
 
             mockFileSystem.Verify(file => file.Rename(weekendLogFile, passedDateLogFile), Times.Once);
 
@@ -192,7 +209,7 @@ namespace FileLoggerKata
         {
             var passedDateLogFile = $"{weekendMessage}-{passedDate:yyyyMMdd}.{logExtension}";
 
-            mockDateProvider.Setup(day => day.Today).Returns(Sunday);
+            mockDateProvider.Setup(day => day.Now).Returns(Sunday);
 
             mockFileSystem.Setup(file => file.Exists(weekendLogFile)).Returns(true);
 
