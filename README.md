@@ -4,6 +4,8 @@
 
 ## https://pnguyen.io/posts/verify-ilogger-call-in-dotnet-core/
 
+## https://im5tu.io/article/2020/11/using-moq-with-ref-in-and-out-parameters-in-c/
+
 ## https://medium.com/@HansikaWanniarachchi/get-started-net-core-application-unit-testing-with-xunit-and-moq-83c7ee0d15f3
 
 ## https://daedtech.com/introduction-to-unit-testing-part-6-test-doubles/

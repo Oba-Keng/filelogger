@@ -10,10 +10,13 @@ namespace FileLoggerKata
     public class FileLoggerKataTests //Class for all FileLogger tests
     {
 
-        private FileLogger filelogger { get; } //To Access filelogger class and its methods
+        private FileLogger filelogger { get; } //To Access Filelogger class and its methods
 
         private const string messageToAppend = " this is the message appended to end of file";
-        private string messagetoTest => $"{now:yyyy-MM-dd HH:mm:ss}" + messageToAppend; //Test message with date 
+
+        private DateTime now => new DateTime(2022, 3, 28, 23, 33, 33);//Creating date and time for during the week
+
+        private string messagetoTest => $"{now:yyyy-MM-dd HH:mm:ss}{messageToAppend}";  //Test message with date 
 
         private const string logExtension = "txt";
 
@@ -22,12 +25,9 @@ namespace FileLoggerKata
         private static readonly DateTime Saturday = new DateTime(2022, 4, 2, 22, 06, 36);//Creating date and time for Saturday
         private static readonly DateTime Sunday = new DateTime(2022, 4, 3, 16, 15, 40);//Creating date and time for Sunday
 
-        private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
+        private string messageToAppendSaturday => $"{Saturday:yyyy-MM-dd HH:mm:ss}{messageToAppend}";
 
-        private string messageToAppendSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}" + messageToAppend;
-
-
-        private DateTime now => new DateTime(2022, 3, 28, 23, 33, 33);//Creating date and time for during the week
+        private string messageToAppendSunday => $"{Sunday:yyyy-MM-dd HH:mm:ss}{messageToAppend}";
 
         private string logFileName_test => $"log{now:yyyyMMdd}.{logExtension}";
 
@@ -65,8 +65,6 @@ namespace FileLoggerKata
             filelogger.Log(messagetoTest);
 
             mockFileSystem.Verify(file => file.Append(logFileName_test, messagetoTest), Times.Once);
-
-
         }
 
         [Fact]
